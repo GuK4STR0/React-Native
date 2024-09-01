@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
-import {TextInput, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, SafeAreaView } from 'react-native';
 
+const CalcularIdade= ()=>{
+const [nascimento, setNascimento] = useState('');
+const [resultado, setResultado] = useState(ano=0,mes=0,dia=0,categoria='');
 
-const CalcularIdade = () => {
-    const nascimento = new Date(DataNasc);
+const CalculadoraIdade = () => {
+    
+    if (!nascimento) {
+    alert('Por favor, insira uma data válida.');
+    return;
+  }
+    const nascimento = new Date(nascimento);
     const dataAtual = new Date();
 
-    const ano = dataAtual.getFullYear() - nascimento.getFullYear();
-    const mes = dataAtual.getMonth() - nascimento.getMonth();
-    const dia = dataAtual.getDate() - nascimento.getDate();
+    let ano = dataAtual.getFullYear() - nascimento.getFullYear();
+    let mes = dataAtual.getMonth() - nascimento.getMonth();
+    let dia = dataAtual.getDate() - nascimento.getDate();
 
-    let calcularAno = ano;
-    let calcularMes = mes < 0 ? mes + 12 : mes;
-    let calcularDia = dia < 0 ? dia + 30 : dia;
-
-    if (days < 0) calcularMes--;
-    if (months < 0 || (mes === 0 && dia < 0)) calcularAno--;
+    if (days < 0) {
+      mes--;
+      days += 30;
+    }
+    if (months < 0){
+      ano--;
+      mes += 12;
+    }
 
     let categoria = '';
     if (calcularAno <= 19) {
@@ -26,28 +36,48 @@ const CalcularIdade = () => {
       categoria = 'Idosos';
     };
 
-    setResultado({ano:calcularAno, mes:calcularMes, dia:calcularDia, categoria:categoria});
+    setResultado({ano: ano, mes: mes, dia: dia, categoria:categoria});
 
     return(
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
         <TextInput
             style={styles.input}
             onChangeText={(text) => setNascimento(text)} 
             value={nascimento}
             placeholder='AAAA-MM-DD'
             />
+            <Button title="Calcular sua Idade" onPress={CalculadoraIdade} />
+              <View style={styles.resultContainer}>
+                <Text style={styles.resultText}>
+                  Idade: {resultado.ano} anos, {resultado.mes} meses, e {resultado.dia} dias
+                </Text>
+                <Text style={styles.resultText}>Categoria: {resultado.categoria}</Text>
+              </View>
         </SafeAreaView>
-    )
-}
-
+    );
+};
+};
 const styles = StyleSheet.create({
-    input:{
-        height:40,
-        margin:12,
-        borderWidth: 3,
-        borderColor: '#1C1C1C',
-        padding:10
-    },
+  container: {
+    width: '100%',
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 2,
+    borderRadius: 5,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    width: 'auto',
+  },
+  resultContainer: {
+    marginTop: 20,
+  },
+  resultText: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginVertical: 5,
+  },
 })
 
 export default CalcularIdade;
